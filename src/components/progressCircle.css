@@ -1,0 +1,17 @@
+.track {
+  stroke: #E5E7EB;
+  stroke-width: 15;
+  fill: none;
+}
+
+.progress {
+  fill: none;
+  stroke: #34D399;
+  stroke-width: 15;
+  stroke-linecap: round;
+}
+
+.progress-text {
+  font-size: 1.65em;
+  font-weight: bold;
+}
