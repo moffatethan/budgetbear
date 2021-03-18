@@ -1,5 +1,10 @@
 # Budget Bear 
 
+As a user I want to X 
+
+As a user, I want to set goals and know how much I have to put away for that to be achieved.
+As a user, I want to set my paycheck and have it divided automatically.
+
 An autopilot budget app that will automatically divide up income and help meet financial goals and giving you free spending money.
 
 # Tech Stack
@@ -28,10 +33,6 @@ $1,049 - $441.50 = $607.50
 $607.60 - $100 = $507.50 (Food Account)
 
 $507.50 is left in what is called "Free Money" account. This would typically be attached to a debit card for a real bank however, for the budget. This will be money Joe can spend.
-
-# Subscription Tracking
-
-Track how much you are spending per month on subscriptions and get notifications when bills are due.
 
 # Pay Down Savings (Experiment)
 
