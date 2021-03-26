@@ -23,7 +23,7 @@ const UILayout = props => {
             <Link to="/transactions" className="text-gray-600 text-med font-medium hover:text-gray-800 transition">Get Advice</Link>
           </div>
           <div className="inline-block mx-8">
-            <Link to="/transactions" className="text-white py-3 px-8 rounded-lg text-med bg-blue-500 font-medium hover:bg-blue-600 transition">Start your Free Trial</Link>
+            <Link to="/transactions" className="text-white py-3 px-8 rounded-lg text-med bg-blue-500 font-medium hover:bg-blue-600 transition">Start budgeting today</Link>
           </div>
         </div>
       </div>

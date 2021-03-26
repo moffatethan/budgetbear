@@ -1,9 +1,17 @@
 import * as React from 'react'
+import api from '../api/axios.api';
 const AuthContext = React.createContext()
 
 const AuthProvider = ({ children }) => {
+
+  // register function
+  const register = (formValues) => {
+    console.log(formValues);
+    console.log('Registering user!');
+  };
+
   return (
-    <AuthContext.Provider value={{hello: "p"}}>
+    <AuthContext.Provider value={register}>
       {children}
     </AuthContext.Provider>
   )
