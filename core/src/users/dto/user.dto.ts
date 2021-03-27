@@ -18,4 +18,7 @@ export class CreateUserDTO {
   @IsString()
   password: string;
 
+  @IsString()
+  passwordConfirmation: string;
+
 }

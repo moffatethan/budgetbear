@@ -1,25 +1,38 @@
 import { AuthConsumer } from '../contexts/authContext'
-import React, { useState } from 'react'
+import React, { useRef } from 'react'
 import { useForm } from 'react-hook-form';
+const checkPasswordStrength = require('zxcvbn');
+const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
 const AuthGuard = ({ children }) => {
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit, errors, watch } = useForm();
 
-  const onSubmit = (data) => {
-    console.log(errors);
-    console.log(data);
+  const password = useRef({});
+  password.current = watch("password", "");
+  const passwordStrength = checkPasswordStrength(password.current).score;
+
+  const renderPasswordStrengthBars = () => {
+    const bars = [];
+    for (let i = 0; i < 4; i++) {
+      bars.push((
+        <div key={i} className="w-1/4 px-1">
+          <div className={`h-2 rounded-xl transition-colors ${i < passwordStrength ? (passwordStrength <= 2 ? 'bg-red-400' : (passwordStrength <= 3 ? 'bg-yellow-400' : 'bg-green-500')): 'bg-gray-200'}`}></div>
+        </div>
+      ))
+    }
+    return bars
   }
 
   return (
     <AuthConsumer>
-      {registerFunction => {
-        if (!registerFunction.user) {
+      {state => {
+        if (!state.user) {
           return (
             <>
               <div className="py-8 text-center">
-                <form onSubmit={handleSubmit(onSubmit)} className="bg-white w-6/12 m-auto rounded-lg shadow- text-left">
+                <form onSubmit={handleSubmit(state.register)} className="bg-white w-6/12 m-auto rounded-lg shadow- text-left">
                   <div className="px-7 pt-5 divide-y-2 divide-solid divide-gray-100">
-                    <h2 className="text-4xl text-blue-800 font-bold my-4">Get Started</h2>
+                    <h2 className="text-4xl text-blue-600 font-bold my-4">Get Started</h2>
                     <p className="py-3 text-gray-600">Sign up for an account and link your bank account to get started</p>
                   </div>
                   <div className="grid grid-cols-2 gap-4 px-7 pt-4 pb-5">
@@ -37,7 +50,7 @@ const AuthGuard = ({ children }) => {
                   <div className="px-7 pt-2 pb-5">
                     <div className="form-group">
                       <label className={`block mb-2 uppercase text-sm tracking-wide font-medium ${errors.emailAddress ? 'text-red-500' : 'text-gray-500'}`}>email address</label>
-                      <input name="emailAddress" id="emailAddress" ref={register({ required: true, pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ })} className={`text-gray-800 transition-colors border-solid border-2 rounded-xl py-3 px-3 outline-none focus:border-blue-500 w-full ${errors.emailAddress ? 'border-red-500 text-red-500' : 'text-gray-300'}`} placeholder="buddy@budgetbear.com" type="email"/>
+                      <input name="emailAddress" id="emailAddress" ref={register({ required: true, pattern: EMAIL_REGEX })} className={`text-gray-800 transition-colors border-solid border-2 rounded-xl py-3 px-3 outline-none focus:border-blue-500 w-full ${errors.emailAddress ? 'border-red-500 text-red-500' : 'text-gray-300'}`} placeholder="buddy@budgetbear.com" type="email"/>
                       {errors.emailAddress && errors.emailAddress.type === "required" && <span className="text-red-500 font-medium my-2 block text-sm">Email address is required</span>}
                       {errors.emailAddress && errors.emailAddress.type === "pattern" && <span className="text-red-500 font-medium my-2 block text-sm">Please provide a valid email address</span>}
                     </div>
@@ -45,13 +58,24 @@ const AuthGuard = ({ children }) => {
                   <div className="grid grid-cols-2 gap-4 px-7 pt-4 pb-5">
                     <div className="form-group">
                       <label className={`block mb-2 uppercase text-sm tracking-wide font-medium ${errors.password ? 'text-red-500' : 'text-gray-500'}`}>password</label>
-                      <input name="password" id="password" ref={register({ required: true })} className={`text-gray-800 transition-colors border-solid border-2 rounded-xl py-3 px-3 outline-none focus:border-blue-500 w-full ${errors.password ? 'border-red-500 text-red-500' : 'text-gray-300'}`} placeholder="fish_is_amazing123!" type="password"/>
-                      {errors.password && <span className="text-red-500 font-medium my-2 block text-sm">Password is required</span>}
+                      <input name="password" id="password" ref={register({ 
+                        required: true,
+                        minLength: 8
+                      })} className={`text-gray-800 transition-colors border-solid border-2 rounded-xl py-3 px-3 outline-none focus:border-blue-500 w-full ${errors.password ? 'border-red-500 text-red-500' : 'text-gray-300'}`} placeholder="fish_is_amazing123!" type="password"/>
+                      <div className="flex my-2 -mx-1">
+                        {renderPasswordStrengthBars()}
+                      </div>
+                      {errors.password && errors.password.type === "required" && <span className="text-red-500 font-medium my-2 block text-sm">Password is required</span>}
+                      {errors.password && errors.password.type === "minLength" && <span className="text-red-500 font-medium my-2 block text-sm">Password must be minimum 8 characters</span>}
                     </div>
                     <div className="form-group">
                       <label className={`block mb-2 uppercase text-sm tracking-wide font-medium ${errors.passwordConfirmation ? 'text-red-500' : 'text-gray-500'}`}>password confirmation</label>
-                      <input name="passwordConfirmation" id="passwordConfirmation" ref={register({ required: true })} className={`text-gray-800 transition-colors border-solid border-2 rounded-xl py-3 px-3 outline-none focus:border-blue-500 w-full ${errors.passwordConfirmation ? 'border-red-500 text-red-500' : 'text-gray-300'}`} placeholder="fish_is_amazing123!" type="password"/>
-                      {errors.passwordConfirmation && <span className="text-red-500 font-medium my-2 block text-sm">Password confirmation is required</span>}
+                      <input name="passwordConfirmation" id="passwordConfirmation" ref={register({ 
+                        required: true,
+                        validate: value => value === password.current || "Password must match"
+                      })} className={`text-gray-800 transition-colors border-solid border-2 rounded-xl py-3 px-3 outline-none focus:border-blue-500 w-full ${errors.passwordConfirmation ? 'border-red-500 text-red-500' : 'text-gray-300'}`} placeholder="fish_is_amazing123!" type="password"/>
+                      {errors.passwordConfirmation && errors.passwordConfirmation.type === "required" && <span className="text-red-500 font-medium my-2 block text-sm">Password confirmation is required</span>}
+                      {errors.passwordConfirmation && errors.passwordConfirmation.type === "validate" && <span className="text-red-500 font-medium my-2 block text-sm">{errors.passwordConfirmation.message}</span>}
                     </div>
                   </div>
                   <div className="px-7 pt-2 pb-5">
@@ -60,7 +84,7 @@ const AuthGuard = ({ children }) => {
                     </div>
                   </div>
                   <div className="px-7 pt-2 pb-5">
-                    <p className="text-gray-400">By clicking "Create Account" you are agreeing to the <a className="underline" href="#">Terms of Service</a> and <a className="underline" href="#">Privacy Policy</a>.</p>
+                    <p className="text-gray-400">By clicking "Create Account" you are agreeing to the <a className="underline" href="/tos">Terms of Service</a> and <a className="underline" href="/privacy">Privacy Policy</a>.</p>
                   </div>
                 </form>
               </div>

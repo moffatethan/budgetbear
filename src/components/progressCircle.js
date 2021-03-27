@@ -1,9 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react'
-import { Check } from 'react-feather'
+import React, { useRef, useEffect } from 'react'
 import './progressCircle.css'
 
 const ProgressCircle = (props) => {
-  const [percent, setPercent] = useState(props.percent || 0)
+  const percent = props.percent || 0;
   if (props.percent > 100) {
     throw new Error(`Percent ${percent} cannot exceed 100`)
   }
@@ -27,8 +26,8 @@ const ProgressCircle = (props) => {
         <circle r={props.radius} cx={props.cxy} cy={props.cxy} ref={progressCircle} className="progress"></circle>
         {
         percent === 100
-        ? <svg xmlns="http://www.w3.org/2000/svg" width={cxy / 2} height={cxy / 2} viewBox="0 0 24 24" stroke={props.fill || "currentColor"} stroke-width="2" stroke-linecap="round" x={(cxy + (cxy / 2)) / 2} alignmentBaseline="middle" y={(cxy + (cxy / 2)) / 2} stroke-linejoin="round" class="feather feather-check"><polyline fill="none" points="20 6 9 17 4 12"></polyline></svg>
-        :<text x={props.cxy} y={cxy + 10} fill={props.fill || "black"} text-anchor="middle" ref={progressText} className="progress-text" alignment-baseline="middle">
+        ? <svg xmlns="http://www.w3.org/2000/svg" width={cxy / 2} height={cxy / 2} viewBox="0 0 24 24" stroke={props.fill || "currentColor"} strokeWidth="2" strokeLinecap="round" x={(cxy + (cxy / 2)) / 2} alignmentBaseline="middle" y={(cxy + (cxy / 2)) / 2} strokeLineJoin="round" className="feather feather-check"><polyline fill="none" points="20 6 9 17 4 12"></polyline></svg>
+        :<text x={props.cxy} y={cxy + 10} fill={props.fill || "black"} textAnchor="middle" ref={progressText} className="progress-text" alignmentBaseline="middle">
         {percent}%</text>
         }
       </svg>

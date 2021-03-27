@@ -36,7 +36,6 @@ export class UserService {
       const authToken = await this.authService.login(user);
       return { ...authToken, user: userFromDb }
     } catch (err) {
-      Logger.error(err);
       throw new InternalServerErrorException();
     }
   }

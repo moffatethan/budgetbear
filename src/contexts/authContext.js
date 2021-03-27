@@ -1,17 +1,34 @@
-import * as React from 'react'
+import React, { useState } from 'react'
 import api from '../api/axios.api';
 const AuthContext = React.createContext()
 
 const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState();
+  const [authToken, setAuthToken] = useState();
 
   // register function
-  const register = (formValues) => {
-    console.log(formValues);
-    console.log('Registering user!');
+  const register = async (formValues) => {
+    try {
+      const response = await api.post('user/new', formValues);
+      setUser(response.data.user);
+      setAuthToken(response.data.accessToken);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
+  const logout = () => {
+    setUser(null);
+    setAuthToken(null);
+  }
+
   return (
-    <AuthContext.Provider value={register}>
+    <AuthContext.Provider value={{
+      user,
+      authToken,
+      register,
+      logout
+    }}>
       {children}
     </AuthContext.Provider>
   )
