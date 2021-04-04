@@ -34,7 +34,7 @@ export class UserService {
       await user.save();
       const userFromDb = await this.userModel.findOne({ emailAddress: userData.emailAddress });
       const authToken = await this.authService.login(user);
-      return { ...authToken, user: userFromDb }
+      return authToken;
     } catch (err) {
       throw new InternalServerErrorException();
     }
@@ -44,8 +44,9 @@ export class UserService {
    * Find and return a user if one exists. If no user found, returns null
    * @param key Key property on the user model. (firstName, lastName, emailAddress, id)
    * @param value The value to lookup.
+   * @params selectPassword Include the password hash (used for authentication)
    */
-  async findOne(key: string, value: string): Promise<User> {
+  async findOne(key: string, value: string, selectPassword = false): Promise<User> {
     if (!key) {
       throw new Error('findOne must have a key to search by')
     }
@@ -55,7 +56,12 @@ export class UserService {
     const filter = {};
     filter[key] = value;
     try {
-      const user: User = await this.userModel.findOne(filter);
+      let user: User = null;
+      if (selectPassword) {
+        user = await this.userModel.findOne(filter).select('+password');
+      } else {
+        user = await this.userModel.findOne(filter);
+      }
       if (!user) {
         Logger.debug('No User Found', UserService.name);
         return null;

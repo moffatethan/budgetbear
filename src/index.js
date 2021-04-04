@@ -4,27 +4,29 @@ import ReactDOM from 'react-dom'
 import './index.css'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import Dashboard from './pages/dashboard'
-import Transactions from './pages/transactions'
-import AuthGuard from './guard/AuthGuard'
+import Register from './pages/register'
+import Login from './pages/login'
+import AuthRoute from './authRoute'
 import { AuthProvider } from './contexts/authContext'
 
 const App = () => (
-	<AuthProvider>
-		<Router>
+	<Router>
+		<AuthProvider>
 			<Layout>
 				<Switch>
-					<AuthGuard>
-						<Route exact path="/">
-							<Dashboard />
-						</Route>
-						<Route exact path="/transactions">
-							<Transactions />
-						</Route>
-					</AuthGuard>
+					<Route exact path="/register">
+						<Register />
+					</Route>
+					<Route exact path="/login">
+						<Login />
+					</Route>
+					<AuthRoute exact path="/dashboard">
+						<Dashboard />
+					</AuthRoute>
 				</Switch>
 			</Layout>
-		</Router>
-	</AuthProvider>
+		</AuthProvider>
+	</Router>
 )
 
 ReactDOM.render(<App />, document.querySelector('#root'))

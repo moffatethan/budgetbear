@@ -1,32 +1,60 @@
-import React, { useState } from 'react'
-import api from '../api/axios.api';
+import React, { useEffect, useState } from 'react'
+import { useHistory } from 'react-router';
 const AuthContext = React.createContext()
 
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState();
-  const [authToken, setAuthToken] = useState();
+  const history = useHistory();
+  const token = localStorage.getItem('token');
+  const expires = localStorage.getItem('expires');
+  const user = localStorage.getItem('user');
 
-  // register function
-  const register = async (formValues) => {
+  const setUser = () => {
     try {
-      const response = await api.post('user/new', formValues);
-      setUser(response.data.user);
-      setAuthToken(response.data.accessToken);
-    } catch (error) {
-      console.log(error);
+      return JSON.parse(user);
+    } catch (err) {
+      return {};
     }
-  };
+  }
+  
+  const [authState, setAuthState] = useState({
+    token,
+    user: setUser(),
+    expires
+  });
+
+  const setAuth = ({ token, user, expires }) => {
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('expires', expires);
+    setAuthState({
+      token,
+      user,
+      expires
+    });
+  }
+
+  const isAuthenticated = () => {
+    if (!authState.token || !authState.expires) {
+      return false;
+    }
+    return (
+      new Date().getTime() / 1000 < authState.expires
+    );
+  }
 
   const logout = () => {
-    setUser(null);
-    setAuthToken(null);
+    localStorage.removeItem('token');
+    localStorage.removeItem('expires');
+    localStorage.removeItem('user');
+    setAuthState({});
+    history.push('/login');
   }
 
   return (
     <AuthContext.Provider value={{
-      user,
-      authToken,
-      register,
+      authState,
+      setAuth,
+      isAuthenticated,
       logout
     }}>
       {children}
@@ -47,12 +75,4 @@ const AuthConsumer = ({ children }) => {
   )
 }
 
-const useAuthState = () => {
-  const context = React.useContext(AuthContext)
-  if (context === undefined) {
-    throw new Error('useAuthState must be used within AuthProvider')
-  }
-  return context
-}
-
-export { AuthProvider, AuthConsumer, useAuthState }
+export { AuthProvider, AuthConsumer, AuthContext }
