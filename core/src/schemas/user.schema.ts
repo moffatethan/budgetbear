@@ -19,5 +19,17 @@ export class User extends Document {
   @Prop({ type: [Types.ObjectId], ref: 'GoalSchema' })
   goals: Types.ObjectId[];
 
+  @Prop({ required: true, default: false })
+  plaidLinked: boolean;
+
+  @Prop({ type: [Types.ObjectId], ref: 'PlaidSchema', select: false })
+  accessTokens: Types.ObjectId[];
+
+  @Prop({ type: Date, default: Date.now() })
+  createdAt: Date;
+
+  @Prop({ type: Date, default: Date.now() })
+  updatedAt: Date;
+
 }
 export const UserSchema = SchemaFactory.createForClass(User);

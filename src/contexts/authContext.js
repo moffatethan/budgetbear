@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useHistory } from 'react-router';
 const AuthContext = React.createContext()
 
@@ -21,6 +21,18 @@ const AuthProvider = ({ children }) => {
     user: setUser(),
     expires
   });
+
+  const setPlaidLinked = (status) => {
+    const user = {
+      ...authState.user,
+      plaidLinked: status
+    };
+    localStorage.setItem('user', JSON.stringify(user));
+    setAuthState({
+      ...authState,
+      user
+    });
+  }
 
   const setAuth = ({ token, user, expires }) => {
     localStorage.setItem('token', token);
@@ -55,7 +67,8 @@ const AuthProvider = ({ children }) => {
       authState,
       setAuth,
       isAuthenticated,
-      logout
+      logout,
+      setPlaidLinked
     }}>
       {children}
     </AuthContext.Provider>

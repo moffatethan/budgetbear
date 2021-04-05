@@ -33,7 +33,7 @@ export class AuthService {
    */
   async validateUser({ emailAddress, password }: AuthDTO): Promise<boolean> {
     try {
-      const user: User = await this.usersService.findOne('emailAddress', emailAddress, true);
+      const user: User = await this.usersService.findOne('emailAddress', emailAddress, ['+password']);
       if (!user) {
         throw new NotFoundException('User not found');
       }

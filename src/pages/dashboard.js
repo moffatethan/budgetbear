@@ -2,19 +2,20 @@ import React, { useContext } from 'react'
 import ProgressCircle from '../components/progressCircle'
 import { ArrowUp, ArrowDown } from 'react-feather'
 import { AuthContext } from '../contexts/authContext';
+import { useHistory } from 'react-router';
+
 const Dashboard = (props) => {
+  const history = useHistory();
   const authContext = useContext(AuthContext);
 
+  if (!authContext.authState.user.plaidLinked) {
+    history.push('/dashboard/plaid/link')
+  }
+
   return (
-    <div className="w-9/12 m-auto">
+    <>
       <div className="mb-8">
         <h1 className="font-bold text-gray-800 text-4xl">Hey {authContext.authState.user.firstName}!</h1>
-      </div>
-      <div className="p-8 rounded-xl mb-3 bg-white shadow-lg">
-        <b>Auth Debugger</b><br /><br />
-        Token: {authContext.authState.token}<br/>
-        Expires: {authContext.authState.expires}<br/>
-        User Info: {JSON.stringify(authContext.authState.user)}<br/>
       </div>
       <div className="grid grid-cols-3 gap-4 mb-8">
         <div className="p-8 bg-white rounded-xl shadow-lg">
@@ -67,7 +68,7 @@ const Dashboard = (props) => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 };
 

@@ -32,7 +32,9 @@ const UILayout = props => {
           }
         </div>
       </div>
-      {props.children}
+      <div className="w-9/12 m-auto">
+        {props.children}
+      </div>
       <Footer />
     </>
   )

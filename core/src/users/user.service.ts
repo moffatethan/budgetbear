@@ -1,10 +1,11 @@
 import { forwardRef, Inject, Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import * as argon2 from 'argon2';
 import { User } from "../schemas/user.schema";
 import { CreateUserDTO } from "./dto/user.dto";
 import { AuthService } from "src/auth/auth.service";
+import { Plaid } from "src/schemas/plaid.schema";
 
 
 @Injectable()
@@ -41,12 +42,29 @@ export class UserService {
   }
 
   /**
+   * Associate the plaid access token to the users account.
+   * @param plaidModelId 
+   * @param user 
+   * @returns boolean | Error
+   */
+  async addPlaidAccessToken(plaidModelId: Types.ObjectId, user: User): Promise<boolean | Error> {
+    try {
+      user.accessTokens.push(plaidModelId);
+      user.plaidLinked = true;
+      await user.save();
+      return true;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  /**
    * Find and return a user if one exists. If no user found, returns null
    * @param key Key property on the user model. (firstName, lastName, emailAddress, id)
    * @param value The value to lookup.
    * @params selectPassword Include the password hash (used for authentication)
    */
-  async findOne(key: string, value: string, selectPassword = false): Promise<User> {
+  async findOne(key: string, value: string, selectedProperties = []): Promise<User> {
     if (!key) {
       throw new Error('findOne must have a key to search by')
     }
@@ -57,8 +75,11 @@ export class UserService {
     filter[key] = value;
     try {
       let user: User = null;
-      if (selectPassword) {
-        user = await this.userModel.findOne(filter).select('+password');
+      if (selectedProperties.length >= 1) {
+        if (selectedProperties.length === 0) {
+          selectedProperties = selectedProperties[0];
+        }
+        user = await this.userModel.findOne(filter).select(selectedProperties);
       } else {
         user = await this.userModel.findOne(filter);
       }

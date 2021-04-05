@@ -2,28 +2,22 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
 @Schema()
-export class Goal extends Document {
+export class Plaid extends Document {
 
   @Prop({ required: true })
-  name: string;
-
-  @Prop({ required: true })
-  dueDate: Date;
+  accessToken: string;
   
-  @Prop()
-  monthlyContribution: string;
+  @Prop({ required: true })
+  itemId: string;
 
-  @Prop()
-  biWeeklyContribution: string;
+  @Prop({ required: true })
+  requestId: string;
 
-  @Prop({ default: false })
-  recurring: boolean;
+  @Prop({ type: Object })
+  metadata: object;
 
   @Prop({ type: Types.ObjectId, ref: 'UserSchema' })
   userId: Types.ObjectId;
-
-  @Prop()
-  recurringType: string;
 
   @Prop({ type: Date, default: Date.now() })
   createdAt: Date;
@@ -32,4 +26,4 @@ export class Goal extends Document {
   updatedAt: Date;
 
 }
-export const GoalSchema = SchemaFactory.createForClass(Goal);
+export const PlaidSchema = SchemaFactory.createForClass(Plaid);
