@@ -59,6 +59,21 @@ export class UserService {
   }
 
   /**
+   * Attach goal to a user.
+   * @param goalId The id of the created goal.
+   * @param user The user to store the goal on.
+   */
+  async addGoal(goalId: Types.ObjectId, user: User): Promise<boolean | Error> {
+    try {
+      user.goals.push(goalId);
+      await user.save();
+      return true;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  /**
    * Find and return a user if one exists. If no user found, returns null
    * @param key Key property on the user model. (firstName, lastName, emailAddress, id)
    * @param value The value to lookup.
@@ -87,7 +102,7 @@ export class UserService {
         Logger.debug('No User Found', UserService.name);
         return null;
       }
-      return user;
+      return await user.populate({ path: 'goals', model: 'Goal' }).execPopulate();
     } catch (err) {
       Logger.error(err);
       throw new InternalServerErrorException();

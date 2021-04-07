@@ -18,7 +18,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async getCurrentUser(@Request() req) {
-    return await this.authService.fetchCurrentUser(req.user);
+    return await this.authService.fetchCurrentUser(req.user.emailAddress);
   }
 
 }

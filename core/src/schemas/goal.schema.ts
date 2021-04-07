@@ -8,13 +8,16 @@ export class Goal extends Document {
   name: string;
 
   @Prop({ required: true })
+  amount: number;
+
+  @Prop({ required: true })
   dueDate: Date;
   
-  @Prop()
-  monthlyContribution: string;
+  @Prop({ required: true })
+  monthlyContribution: number;
 
-  @Prop()
-  biWeeklyContribution: string;
+  @Prop({ required: true })
+  biWeeklyContribution: number;
 
   @Prop({ default: false })
   recurring: boolean;

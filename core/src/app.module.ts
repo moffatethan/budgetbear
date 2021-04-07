@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { PlaidModule } from './plaid/plaid.module';
+import { GoalsModule } from './goals/goals.module';
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { PlaidModule } from './plaid/plaid.module';
     MongooseModule.forRoot('mongodb://localhost:27017/budgetbear'),
     UsersModule,
     AuthModule,
-    PlaidModule
+    PlaidModule,
+    GoalsModule
   ],
   controllers: [AppController],
   providers: [AppService],

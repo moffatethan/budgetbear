@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import { AuthContext } from '../../contexts/authContext';
 import Gravatar from 'react-gravatar';
 import { ChevronDown } from 'react-feather';
@@ -6,10 +6,11 @@ import { Link } from 'react-router-dom';
 import { useTransition, animated } from 'react-spring';
 import { easeQuadIn, easeQuadOut } from 'd3-ease';
 
-const Dropdown = ({ opener, status }) => {
+const Dropdown = (props) => {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const authContext = useContext(AuthContext);
 
-  const transitions = useTransition(status, null, {
+  const transitions = useTransition(dropdownOpen, null, {
     from: { opacity: 0, transform: "scale(0.95)" },
     enter: { opacity: 1, transform: "scale(1)" },
     leave: { opacity: 0, transform: "scale(0.95)" },
@@ -24,7 +25,7 @@ const Dropdown = ({ opener, status }) => {
   useEffect(() => {
     const handler = event => {
       if (!menuRef.current.contains(event.target)) {
-        opener(false);
+        setDropdownOpen(false);
       }
     }
 
@@ -36,8 +37,8 @@ const Dropdown = ({ opener, status }) => {
 
   return (
     <>
-      <div ref={menuRef} className="relative">
-        <button onClick={() => opener(!status)} className="flex items-center text-gray-600 text-med font-medium hover:text-blue-500 transition">
+      <div ref={menuRef} className="relative z-50">
+        <button onClick={() => setDropdownOpen(!dropdownOpen)} className="flex items-center text-gray-600 text-med font-medium hover:text-blue-500 transition">
           <p className="flex flex-1 mr-4">
             <span className="mr-2">{authContext.authState.user.firstName} </span>
             <ChevronDown />                  
@@ -45,7 +46,7 @@ const Dropdown = ({ opener, status }) => {
           <Gravatar email={authContext.authState.user.emailAddress} className="rounded-full shadow-md" />
         </button>
         {
-          status
+          dropdownOpen
           ? transitions.map(
             ({ item, key, props }) =>
               item && (
@@ -57,10 +58,10 @@ const Dropdown = ({ opener, status }) => {
                     <ul className="divide-solid divide-gray-100 divide-y-2">
                       <div className="pl-5 pt-5 pr-5 pb-3">
                         <li className="py-2">
-                          <Link to="/dashboard" className="transition-colors text-gray-800 hover:text-blue-500">Dashboard</Link>
+                          <Link onClick={() => setDropdownOpen(!dropdownOpen)} to="/dashboard" className="transition-colors text-gray-800 hover:text-blue-500">Dashboard</Link>
                         </li>
                         <li className="py-2">
-                          <Link to="/account/settings" className="transition-colors text-gray-800 hover:text-blue-500">Account Settings</Link>
+                          <Link onClick={() => setDropdownOpen(!dropdownOpen)} to="/account/settings" className="transition-colors text-gray-800 hover:text-blue-500">Account Settings</Link>
                         </li>
                       </div>
                       <div className="pl-5 pt-2 pr-5 pb-3">

@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { User } from 'src/schemas/user.schema';
 import { UserService } from 'src/users/user.service';
 import { JwtService } from '@nestjs/jwt';
@@ -52,9 +52,12 @@ export class AuthService {
    * Grab the signed in user from the jwt payload
    * @param user The user to fetch
    */
-  async fetchCurrentUser(user) {
+  async fetchCurrentUser(userEmailAddress) {
     try {
-      const account = await this.usersService.findOne('emailAddress', user.emailAddress);
+      const account = await this.usersService.findOne('emailAddress', userEmailAddress);
+      if (!account) {
+        throw new BadRequestException('User not found');
+      }
       return account;
     } catch (error) {
       throw error;

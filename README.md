@@ -2,7 +2,7 @@
 
 As a user I want to X 
 
-As a user, I want to set goals and know how much I have to put away for that to be achieved.
+As a user, I want to set goals and know how much I have to put away for that to be achieved every paycheck I make.
 As a user, I want to set my paycheck and have it divided automatically.
 
 An autopilot budget app that will automatically divide up income and help meet financial goals and giving you free spending money.
@@ -36,7 +36,7 @@ $507.50 is left in what is called "Free Money" account. This would typically be 
 
 # Pay Down Savings (Experiment)
 
-I want to do a test with me psychologically, I have a spending issue. So I want to see instead of savings starting at zero, they start at the end goal and I pay down until I achieve my goals. For example, tuition is $5,300.
+I want to do a test. So I want to see instead of savings starting at zero, they start at the end goal and I pay down until I achieve my goals. For example, tuition is $5,300.
 
-If Joe starts at $5,300 and just pay down the balance overtime, would he feel more obligated to follow it as it looks more like debt than actually saving but at the end you have the full amount + interest (having different savings accounts with your bank)!
+If Joe starts at $5,300 and just pay down the balance overtime, would he feel more obligated to follow it as it looks more like debt than actually saving but at the end you have the full amount and even more if he deposits his budget into interest yielding savings accounts.
 

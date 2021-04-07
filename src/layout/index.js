@@ -5,12 +5,7 @@ import Footer from '../components/footer'
 import { AuthContext } from '../contexts/authContext'
 
 const UILayout = props => {
-  const [dropdownOpen, setDropdownOpen] = useState(false);  
   const authContext = useContext(AuthContext);
-
-  const openDropdown = bool => {
-    setDropdownOpen(bool);
-  }
 
   return (
     <>
@@ -27,7 +22,7 @@ const UILayout = props => {
           </div>
           {
             authContext.isAuthenticated() 
-            ? <div className="inline-block mx-8"><Dropdown opener={openDropdown} status={dropdownOpen} /></div>
+            ? <div className="inline-block mx-8"><Dropdown /></div>
             : (
               <>
                 <div className="inline-block mx-8">
