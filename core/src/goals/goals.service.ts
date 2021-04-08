@@ -19,7 +19,14 @@ export class GoalService {
     private userService: UserService
   ) {}
 
-  async createGoal(currentUser: User, goalData: CreateGoalDTO) {
+  /**
+   * Create a new goal and save it in the database.
+   * @param currentUser The current signed in user.
+   * @param goalData Goal information from the request.
+   * @throws BadRequestException
+   * @returns Goal | Error
+   */
+  async createGoal(currentUser: User, goalData: CreateGoalDTO): Promise<Goal | Error> {
     try {
       const goal = new this.goalModel(goalData);
       goal.userId = currentUser.id;
@@ -36,6 +43,12 @@ export class GoalService {
     }
   }
 
+  /**
+   * Calculate the monthly contribution of the amount to meet by the selected due date.
+   * @param amount Amount to be calculated
+   * @param dueDate When the amount should be completed
+   * @returns The monthly contribution to meet the goal by the due date.
+   */
   private calculateMonthlyContribution(amount: number, dueDate: string): number {
     try {
       const currentDate = new Date();
