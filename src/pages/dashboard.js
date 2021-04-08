@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import ProgressCircle from '../components/progressCircle'
 import { ArrowUp, ArrowDown } from 'react-feather'
+import { Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/authContext';
 import { useHistory } from 'react-router';
 import { useSpring, animated } from 'react-spring';
@@ -54,7 +55,7 @@ const Dashboard = (props) => {
           : <a href="/" className="py-4 px-12 bg-blue-600 hover:bg-blue-800 transition-colors text-white font-medium rounded-full">Make a Goal</a>
         }
       </div>
-      <div className="grid grid-cols-2 gap-4">
+      {/* <div className="grid grid-cols-2 gap-4">
         <animated.div style={loadAnimation} className="bg-white flex p-8 h-auto rounded-xl shadow-lg">
           <ProgressCircle fill="#34D399" radius="60" cxy="80" width="180" height="150" percent={100} />
             <div>
@@ -77,20 +78,20 @@ const Dashboard = (props) => {
               </div>
             </div>
           </animated.div>
-      </div>
-      {/* {
+      </div> */}
+      {
         authContext.authState.user.goals.length === 0
         ? (
           <div className="text-center">
             <h1 className="text-4xl mb-4 text-blue-500 font-bold">No goals yet</h1>
-            <p className="w-5/12 mb-12 text-lg leading-loose m-auto">
+            <p className="w-5/12 mb-12 text-lg leading-loose m-auto md:w-6/12">
               Saving goals allow you to make things happen in your financial life. Setup a goal now and let Buddy Bear calculate how much you need to put away to meet that goal by your due date.
             </p>
-            <a href="/" className="py-4 px-12 bg-blue-600 hover:bg-blue-800 transition-colors text-white font-medium rounded-full">Make a Goal</a>
+            <Link to="/goals/new" className="py-4 px-12 bg-blue-600 hover:bg-blue-800 transition-colors text-white font-medium rounded-full">Make a Goal</Link>
           </div>
         )
         : null
-      } */}
+      }
     </>
   )
 };

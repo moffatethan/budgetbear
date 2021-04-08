@@ -20,6 +20,24 @@ export class GoalService {
   ) {}
 
   /**
+   * Find a goal from the database
+   * @param goalId The id of the goal to fetch.
+   * @returns Promise<Goal | null>
+   */
+  async findGoalById(goalId: string): Promise<Goal | null> {
+    try {
+      const goal = await this.goalModel.findById(goalId);
+      if (goal) {
+        return goal;
+      } else {
+        return null;
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  /**
    * Create a new goal and save it in the database.
    * @param currentUser The current signed in user.
    * @param goalData Goal information from the request.

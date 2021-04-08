@@ -8,6 +8,7 @@ import Register from './pages/register'
 import Login from './pages/login'
 import PlaidLink from './pages/plaidLink';
 import AuthRoute from './authRoute'
+import NewGoal from './pages/newGoal';
 import { AuthProvider } from './contexts/authContext'
 import { AuthAxiosProvider } from './contexts/authAxios'
 
@@ -28,6 +29,9 @@ const App = () => (
 						</AuthRoute>
 						<AuthRoute exact path="/dashboard/plaid/link">
 							<PlaidLink />
+						</AuthRoute>
+						<AuthRoute exact path="/goals/new">
+							<NewGoal />
 						</AuthRoute>
 					</Switch>
 				</Layout>
