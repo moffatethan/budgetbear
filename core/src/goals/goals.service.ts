@@ -47,8 +47,9 @@ export class GoalService {
   async createGoal(currentUser: User, goalData: CreateGoalDTO): Promise<Goal | Error> {
     try {
       const goal = new this.goalModel(goalData);
+      goal.dueDate = new Date(goalData.dueDate);
       goal.userId = currentUser.id;
-      goal.monthlyContribution = this.calculateMonthlyContribution(goalData.amount, goalData.dueDate);
+      goal.monthlyContribution = this.calculateMonthlyContribution(goalData.amount, goal.dueDate);
       goal.biWeeklyContribution = Math.round(goal.monthlyContribution / 2);
       const passed = await this.userService.addGoal(goal.id, currentUser);
       if (passed) {
@@ -67,10 +68,10 @@ export class GoalService {
    * @param dueDate When the amount should be completed
    * @returns The monthly contribution to meet the goal by the due date.
    */
-  private calculateMonthlyContribution(amount: number, dueDate: string): number {
+  private calculateMonthlyContribution(amount: number, dueDate: Date): number {
     try {
       const currentDate = new Date();
-      const futureDate = new Date(dueDate);
+      const futureDate = dueDate;
       const dateDiff = futureDate.getTime() - currentDate.getTime();
       const dateDiffInDays = Math.floor(dateDiff / (1000 * 3600 * 24));
       return Math.round(amount / Math.round(dateDiffInDays / 30));

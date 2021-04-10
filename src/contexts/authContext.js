@@ -22,6 +22,17 @@ const AuthProvider = ({ children }) => {
     expires
   });
 
+  const addGoal = (goal) => {
+    setAuthState({
+      ...authState,
+      user: {
+        ...authState.user,
+        goals: [...authState.user.goals, goal]
+      }
+    });
+    localStorage.setItem('user', JSON.stringify(authState.user));
+  }
+
   const setPlaidLinked = (status) => {
     const user = {
       ...authState.user,
@@ -68,7 +79,8 @@ const AuthProvider = ({ children }) => {
       setAuth,
       isAuthenticated,
       logout,
-      setPlaidLinked
+      setPlaidLinked,
+      addGoal
     }}>
       {children}
     </AuthContext.Provider>

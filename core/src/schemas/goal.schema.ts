@@ -25,7 +25,7 @@ export class Goal extends Document {
   @Prop({ type: Types.ObjectId, ref: 'UserSchema' })
   userId: Types.ObjectId;
 
-  @Prop()
+  @Prop({ default: "none" })
   recurringType: string;
 
   @Prop({ type: Date, default: Date.now() })

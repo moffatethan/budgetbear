@@ -9,7 +9,7 @@ const UILayout = props => {
 
   return (
     <>
-      <div className="px-12 py-4 flex justify-center">
+      <div className="px-12 py-6 flex justify-center">
         <div className="logo self-center flex-1">
           <h1 className="text-2xl font-black text-gray-800 uppercase tracking-wide">Budget <span className="text-blue-600">Bear</span></h1>
         </div>
@@ -36,7 +36,7 @@ const UILayout = props => {
           }
         </div>
       </div>
-      <div className="w-9/12 m-auto md:w-full md:py-2 md:px-12">
+      <div className="lg:w-9/12 md:w-11/12 m-auto">
         {props.children}
       </div>
       <Footer />

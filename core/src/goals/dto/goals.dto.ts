@@ -1,7 +1,4 @@
-import { IsBoolean, IsDateString, IsNotEmpty, IsNumber, IsObject, IsString } from 'class-validator';
-
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateGoalDTO {
 
@@ -14,10 +11,11 @@ export class CreateGoalDTO {
   dueDate: string;
 
   @IsBoolean()
-  @IsNotEmpty()
+  @IsOptional()
   recurring: boolean;
 
   @IsString()
+  @IsOptional()
   recurringType: string;
 
   @IsNumber()
