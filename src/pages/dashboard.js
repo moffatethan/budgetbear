@@ -1,14 +1,19 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useRef } from 'react'
 import ProgressCircle from '../components/progressCircle'
 import { ArrowUp, ArrowDown, AlertCircle } from 'react-feather'
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/authContext';
+import FormDrawer, { FormDrawerPage, FormDrawerPageHeader } from '../components/formDrawer/formDrawer';
 import { useHistory } from 'react-router';
+import Form, { FormGroup, FormInput } from '../components/form';
 import { useSpring, animated } from 'react-spring';
+import { AuthAxiosContext } from '../contexts/authAxios';
 
 const Dashboard = (props) => {
   const history = useHistory();
   const formatter = new Intl.NumberFormat('en-US');
+  const [formDrawerIsOpen, setFormDrawerIsOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const [income, setIncome] = useState(3000);
   const [goalData, setGoalData] = useState({
@@ -16,6 +21,27 @@ const Dashboard = (props) => {
     goalTotal: 0
   });
   const authContext = useContext(AuthContext);
+  const { authAxios } = useContext(AuthAxiosContext);
+
+  const onSubmit = async (formValues) => {
+    try {
+      const body = {
+        ...formValues,
+        dueDate: (new Date(formValues.dueDate)).toLocaleDateString(),
+        amount: parseFloat(formValues.amount)
+      };
+      setGoalData({
+        ...goalData,
+        goalTotal: goalData.goalTotal + parseFloat(formValues.amount)
+      });
+      setErrorMessage('');
+      const { data } = await authAxios.post('goals/new', body);
+      authContext.addGoal(data);
+      setFormDrawerIsOpen(false);
+    } catch (err) {
+      setErrorMessage(err.message);
+    }
+  }
 
   const loadAnimation = useSpring({
     from: {opacity: 0, transform: 'scale(0.95)'},
@@ -25,7 +51,7 @@ const Dashboard = (props) => {
   useEffect(() => {
     const goals = authContext.authState.user.goals;
     const goalAmounts = goals.map(goal => goal.monthlyContribution);
-    const goalTotal = goalAmounts.reduce((acc, currentVal) => acc + currentVal);
+    const goalTotal = goalAmounts.reduce((acc, currentVal) => acc + currentVal, 0);
     setGoalData({
       ...goalData,
       goalAmounts: [...goalData.goalAmounts, goalAmounts],
@@ -38,6 +64,55 @@ const Dashboard = (props) => {
     history.push('/dashboard/plaid/link')
   }
 
+  const renderFormDrawer = () => (
+    <FormDrawer status={formDrawerIsOpen} setStatus={setFormDrawerIsOpen}>
+      <FormDrawerPage>
+        <FormDrawerPageHeader
+          heading="Create a new Goal"
+          paragraph="Start saving toward that new vacation, or that new car."
+        />
+        <Form
+          error={errorMessage}
+          onSubmit={onSubmit}
+          bottomNotice={<>Need some advice on setting goals? <a href="#" className='text-blue-500 underline'>Ask an advisor!</a></>}
+          buttonText="Create Goal"
+        >
+          <FormGroup>
+            <FormInput
+              label="Goal name"
+              type="text"
+              name="name"
+              placeholder="My rent"
+              rules={{
+                required: true
+              }}
+            />
+            <FormInput
+              label="Due date"
+              type="date"
+              name="dueDate"
+              rules={{
+                required: true
+              }}
+            />
+          </FormGroup>
+          <FormGroup>
+            <FormInput
+              label="Amount"
+              type="number"
+              name="amount"
+              rules={{
+                required: true
+              }}
+              placeholder="$3500"
+              currencyMask
+            />
+          </FormGroup>
+        </Form>
+      </FormDrawerPage>
+    </FormDrawer>
+  );
+
   if (loading) {
     return (
       <div>
@@ -47,14 +122,19 @@ const Dashboard = (props) => {
   } else {
     return (
       <>
-        {
-          parseFloat(goalData.goalTotal) < 3000 
-          ? <animated.div style={loadAnimation} className="bg-red-400 rounded-md text-white my-3 p-3">
-              <div className="flex justify-center">
-                <AlertCircle />
-                <p className="ml-2 font-medium">Your savings goals have exceeded your income. <a className="underline" href="#">Want some advice?</a></p>
-              </div>
-            </animated.div>
+      {
+        formDrawerIsOpen
+        ? renderFormDrawer()
+        : null
+      }
+      {
+        parseFloat(goalData.goalTotal.replaceAll(',', '')) > income
+        ? <animated.div style={loadAnimation} className="bg-red-400 rounded-md text-white my-3 p-3">
+            <div className="flex justify-center">
+              <AlertCircle />
+              <p className="ml-2 font-medium">Your savings goals have exceeded your income. <a className="underline" href="#">Want some advice?</a></p>
+            </div>
+          </animated.div>
           : null
         }
         <animated.div style={loadAnimation} className="flex mb-8 md:flex-col lg:flex-row">
@@ -85,18 +165,15 @@ const Dashboard = (props) => {
           {
             authContext.authState.user.goals.length === 0
             ? null
-            : <Link to="/goals/new" className="py-4 px-12 bg-blue-600 hover:bg-blue-800 transition-colors text-white font-medium rounded-full">Make a Goal</Link>
+            : <button onClick={setFormDrawerIsOpen} className="py-4 px-12 bg-blue-600 hover:bg-blue-800 transition-colors text-white font-medium rounded-full">Make a Goal</button>
           }
         </div>
         {
           authContext.authState.user.goals.length === 0
           ? (
             <div className="text-center">
-              <h1 className="text-4xl mb-4 text-blue-500 font-bold">No goals yet</h1>
-              <p className="w-5/12 mb-12 text-lg leading-loose m-auto md:w-6/12">
-                Saving goals allow you to make things happen in your financial life. Setup a goal now and let Buddy Bear calculate how much you need to put away to meet that goal by your due date.
-              </p>
-              <Link to="/goals/new" className="py-4 px-12 bg-blue-600 hover:bg-blue-800 transition-colors text-white font-medium rounded-full">Make a Goal</Link>
+              <h1 className="text-4xl w-5/12 m-auto mb-8 text-blue-500 font-bold">Let's get you started with some goals.</h1>
+              <button onClick={setFormDrawerIsOpen} className="py-4 px-12 bg-blue-600 hover:bg-blue-800 transition-colors text-white font-medium rounded-full">Make a Goal</button>
             </div>
           )
           : (

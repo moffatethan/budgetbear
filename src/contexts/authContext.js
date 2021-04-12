@@ -23,14 +23,13 @@ const AuthProvider = ({ children }) => {
   });
 
   const addGoal = (goal) => {
+    const user = {...authState.user};
+    user.goals = [...user.goals, goal];
     setAuthState({
       ...authState,
-      user: {
-        ...authState.user,
-        goals: [...authState.user.goals, goal]
-      }
+      user
     });
-    localStorage.setItem('user', JSON.stringify(authState.user));
+    localStorage.setItem('user', JSON.stringify(user));
   }
 
   const setPlaidLinked = (status) => {

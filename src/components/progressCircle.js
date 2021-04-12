@@ -1,19 +1,26 @@
-import React, { useRef, useEffect } from 'react'
-import './progressCircle.css'
+import React, { useRef, useEffect, useState } from 'react';
+import './progressCircle.css';
 
 const ProgressCircle = (props) => {
+  const [progressCircleData, setProgressCircleData] = useState({
+    radius: null,
+    circumference: 0
+  })
   const percent = props.percent || 0;
   if (props.percent > 100) {
-    throw new Error(`Percent ${percent} cannot exceed 100`)
+    throw new Error(`Percent ${percent} cannot exceed 100`);
   }
-  const progressCircle = useRef()
-  const progressText = useRef()
-  let radius = null;
-  let circumference = 0 
+
+  const progressCircle = useRef();
+  const progressText = useRef();
 
   useEffect(() => {
-    radius = progressCircle.current.r.baseVal.value
-    circumference = radius * 2 * Math.PI
+    const radius = progressCircle.current.r.baseVal.value
+    const circumference = radius * 2 * Math.PI
+    setProgressCircleData({
+      radius,
+      circumference
+    });
     progressCircle.current.style.stroke = props.fill || "none"
     progressCircle.current.style.strokeDasharray = circumference
     progressCircle.current.style.strokeDashoffset = circumference - (percent / 100) * circumference

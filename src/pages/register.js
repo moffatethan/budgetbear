@@ -50,8 +50,8 @@ const Register = (props) => {
   return (
     <>
       {redirectOnRegister && <Redirect to='/dashboard' />}
-      <div className="py-8 text-center">
-        <form onSubmit={handleSubmit(registerUser)} className="bg-white w-6/12 m-auto rounded-lg shadow- text-left">
+      <div className="text-center">
+        <form onSubmit={handleSubmit(registerUser)} className="bg-white lg:w-11/12 md:w-11/12 m-auto rounded-lg shadow- text-left">
           <div className="px-7 pt-5 divide-y-2 divide-solid divide-gray-100">
             <h2 className="text-4xl text-blue-600 font-bold my-4">Get Started</h2>
             <p className="py-3 text-gray-600">Sign up for an account and link your bank account to get started</p>
