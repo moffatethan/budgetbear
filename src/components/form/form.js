@@ -4,7 +4,7 @@ import LoadingButton from '../loadingButton/loadingButton';
 import ErrorMessage from '../errorMessage/errorMessage';
 
 const Form = ({ onSubmit, className, error, heading, bottomNotice, buttonText, children }) => {
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit, errors, watch } = useForm();
   const [loading, setLoading] = useState(false);
 
   const formSubmitHandler = (formValues) => {
@@ -33,7 +33,7 @@ const Form = ({ onSubmit, className, error, heading, bottomNotice, buttonText, c
       : null
       }
       {
-        Array.isArray(children) ? children.map((child, index) => React.cloneElement(child, { errors, register, key: index } )) : React.cloneElement(children, { errors, register })
+        Array.isArray(children) ? children.map((child, index) => React.cloneElement(child, { errors, register, watch, key: index } )) : React.cloneElement(children, { errors, register, watch })
       }
       <div className="pt-2 pb-5">
         <div className="form-group">

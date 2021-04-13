@@ -3,7 +3,6 @@ import { AuthContext } from '../../contexts/authContext';
 import { useTransition, animated } from 'react-spring';
 import { easeQuadIn, easeQuadOut } from 'd3-ease';
 import { Link } from 'react-router-dom';
-import { useClickOutside } from '../../hooks/useClickOutside';
 import PropError from '../../errors/PropError';
 
 const DropdownContent = ({ status, setStatus }) => {

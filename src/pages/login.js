@@ -1,10 +1,7 @@
-import React, { useRef, useContext, useState } from 'react'
-import { useForm } from 'react-hook-form';
+import React, { useContext, useState } from 'react'
 import { Redirect } from 'react-router';
 import api from '../api/axios.api';
-import ErrorMessage from '../components/errorMessage/errorMessage';
 import Form, { FormGroup, FormInput } from '../components/form';
-import LoadingButton from '../components/loadingButton/loadingButton';
 import { AuthContext } from '../contexts/authContext';
 
 const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -47,7 +44,8 @@ const Login = ({ children }) => {
             name="emailAddress"
             placeholder="buddy_bear@budgetbear.com"
             rules={{
-              required: true
+              required: true,
+              pattern: EMAIL_REGEX
             }}
           />
         </FormGroup>

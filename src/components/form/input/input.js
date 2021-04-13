@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useRef } from 'react'
+const checkPasswordStrength = require('zxcvbn');
 
 /**
  * 
@@ -10,13 +11,58 @@ import React from 'react'
  * @param {} register This field is automatically added by the Form
  * @returns 
  */
-const FormInput = ({ label, type, name, placeholder, currencyMask, key, rules, errors, register }) => {
+const FormInput = ({ label, type, name, placeholder, key, rules, errors, register }) => {
   return (
     <div key={key}>
       <label className={`block mb-2 uppercase text-sm tracking-wide font-medium ${errors[name] ? 'text-red-500' : 'text-gray-500'}`}>{label}</label>
       <input name={name} id={name} ref={register(rules)} className={`text-gray-800 transition-colors border-solid border-2 rounded-xl py-3 px-3 outline-none focus:border-blue-500 w-full ${errors[name] ? 'border-red-500 text-red-500' : 'text-gray-300'}`} placeholder={placeholder} type={type} />
       {errors[name] && errors[name].type === "required" && <span className="text-red-500 font-medium my-2 block text-sm">{label} is required</span>}
       {errors[name] && errors[name].type === "pattern" && <span className="text-red-500 font-medium my-2 block text-sm">Input does not match pattern</span>}  
+    </div>
+  )
+}
+
+/**
+ * Packaged inputs for password, provided Password and PasswordConfirmation.
+ * @returns 
+ */
+export const PasswordInputs = ({ label, type, name, placeholder, key, rules, errors, register, watch }) => {
+  const password = useRef({});
+  password.current = watch("password", "");
+  const passwordStrength = checkPasswordStrength(password.current).score;
+
+  const renderPasswordStrengthBars = () => {
+    const bars = [];
+    for (let i = 0; i < 4; i++) {
+      bars.push((
+        <div key={i} className="w-1/4 px-1">
+          <div className={`h-2 rounded-xl transition-colors ${i < passwordStrength ? (passwordStrength <= 2 ? 'bg-red-400' : (passwordStrength <= 3 ? 'bg-yellow-400' : 'bg-green-500')): 'bg-gray-200'}`}></div>
+        </div>
+      ))
+    }
+    return bars
+  }
+
+  return (
+    <div className="grid grid-cols-2 gap-4 pt-2 pb-5">
+      <div key={key}>
+        <label className={`block mb-2 uppercase text-sm tracking-wide font-medium ${errors[name] ? 'text-red-500' : 'text-gray-500'}`}>{label}</label>
+        <input name={name} id='password' ref={register(rules)}  className={`text-gray-800 transition-colors border-solid border-2 rounded-xl py-3 px-3 outline-none focus:border-blue-500 w-full ${errors  [name] ? 'border-red-500 text-red-500' : 'text-gray-300'}`} placeholder='fish_is_amazing123!' type='password' />
+        <div className="flex my-2 -mx-1">
+          {renderPasswordStrengthBars()}
+        </div>
+        {errors[name] && errors[name].type === "required" && <span className="text-red-500 font-medium my-2 block text-sm">{label} is required</span>}
+        {errors[name] && errors[name].type === "pattern" && <span className="text-red-500 font-medium my-2 block text-sm">{label} is not valid</span>}  
+      </div>
+      <div className="form-group">
+        <label className={`block mb-2 uppercase text-sm tracking-wide font-medium ${errors.passwordConfirmation ? 'text-red-500' : 'text-gray-500'}`}>password confirmation</label>
+        <input name="passwordConfirmation"  id="passwordConfirmation" ref={register({ 
+          required: true,
+          validate: value => value === password.current || "Password must match"
+        })} className={`text-gray-800 transition-colors border-solid border-2 rounded-xl py-3 px-3 outline-none focus:border-blue-500 w-full ${errors.passwordConfirmation ? 'border-red-500 text-red-500' : 'text-gray-300'}`} placeholder="fish_is_amazing123!" type="password"/>
+        {errors.passwordConfirmation && errors.passwordConfirmation.type === "required" && <span className="text-red-500 font-medium my-2 block text-sm">Password confirmation is required</span>}
+        {errors.passwordConfirmation && errors.passwordConfirmation.type === "validate" && <span className="text-red-500 font-medium my-2 block text-sm">{errors.passwordConfirmation.message}</span>}
+      </div>
     </div>
   )
 }
