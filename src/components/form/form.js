@@ -40,7 +40,7 @@ const Form = ({ onSubmit, className, error, heading, bottomNotice, buttonText, c
           {
             loading 
             ? <LoadingButton />
-            : <button className="w-full bg-blue-500 py-3 rounded-xl text-white font-bold hover:bg-blue-600 transition-colors">{buttonText}</button>
+            : <button className="w-full bg-blue-500 py-3 rounded-xl text-white shadow-sm hover:shadow-md font-bold hover:bg-blue-600 transition">{buttonText}</button>
           }
         </div>
       </div>
